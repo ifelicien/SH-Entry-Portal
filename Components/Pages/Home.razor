@@ -1,0 +1,55 @@
+﻿@page "/"
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="h5">Get Started</h2>
+        <p class="mb-3">
+            Start a new member submission using the entry form.
+        </p>
+        <a class="btn btn-primary" href="/members/new">Go to Member Entry</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h6">Portal Status</h2>
+                <p class="mb-1"><strong>App:</strong> Running</p>
+                <p class="mb-0"><strong>Last checked:</strong> @lastChecked</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h6">Validation Notes</h2>
+                <ul class="mb-0">
+                    <li>Required fields must be completed.</li>
+                    <li>Email format is validated.</li>
+                    <li>Phone format is validated.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="h6">Quick Steps</h2>
+        <ol class="mb-0">
+            <li>Open Member Entry.</li>
+            <li>Complete required fields.</li>
+            <li>Submit and confirm success.</li>
+        </ol>
+    </div>
+</div>
+
+<p class="small text-muted mb-0">
+    Learning build v0.1. Contact the portal admin for data corrections.
+</p>
+
+@code {
+    private readonly string lastChecked = DateTime.Now.ToString("f");
+}
