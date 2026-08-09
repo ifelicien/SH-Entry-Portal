@@ -1,8 +1,69 @@
 @page "/members"
 @using SH_Entry_Portal.Models
 
-<h3> Member Entry </h3>
+<div class="form-page">
+    <div class="form-header">
+        <h3>Member Entry</h3>
+        <p class="text-muted">Complete all required fields and submit to register a new member.</p>
+    </div>
 
-<div class row g-3 mb-4>
+    <div class="card form-card">
+        <div class="card-body">
 
+            <h5 class="section-title">Personal Information</h5>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-control" @bind="FirstName" placeholder="Jane" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" class="form-control" @bind="LastName" placeholder="Doe" />
+                </div>
+            </div>
+
+            <h5 class="section-title">Contact</h5>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Phone</label>
+                    <input type="text" class="form-control" @bind="Phone" placeholder="123-456-7890" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input type="text" class="form-control" @bind="Email" placeholder="someone@somewhere.com" />
+                </div>
+            </div>
+
+            <h5 class="section-title">Membership</h5>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">Role</label>
+                    <input type="text" class="form-control" @bind="Role" placeholder="Member" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Status</label>
+                    <input type="text" class="form-control" @bind="Status" placeholder="Active" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Joined On</label>
+                    <input type="text" class="form-control" @bind="JoinedOn" placeholder="MM/DD/YYYY" />
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary px-4">Submit</button>
+            </div>
+
+        </div>
+    </div>
 </div>
+
+@code {
+    private string FirstName = "";
+    private string LastName = "";
+    private string Phone = "";
+    private string Email = "";
+    private string JoinedOn = "";
+    private string Status = "";
+    private string Role = "";
+}

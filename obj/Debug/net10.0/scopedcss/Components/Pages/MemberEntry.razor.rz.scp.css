@@ -1,0 +1,32 @@
+.form-page[b-6ffag7gsd1] {
+    max-width: 860px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.form-header[b-6ffag7gsd1] {
+    margin-bottom: 1.5rem;
+}
+
+.form-header h3[b-6ffag7gsd1] {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.form-card[b-6ffag7gsd1] {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.section-title[b-6ffag7gsd1] {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6c757d;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+}
