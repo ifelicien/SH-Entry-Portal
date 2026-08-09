@@ -83,5 +83,5 @@
 /Users/irwinfelicien/Desktop/Coding/SH Entry Portal/obj/Debug/net10.0/ref/SH_Entry_Portal.dll
 /Users/irwinfelicien/Desktop/Coding/SH Entry Portal/obj/Debug/net10.0/SH Entry Portal.sourcelink.json
 /Users/irwinfelicien/Desktop/Coding/SH Entry Portal/obj/Debug/net10.0/scopedcss/Components/Pages/MemberEntry.razor.rz.scp.css
-/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/obj/Debug/net10.0/compressed/a806oa56zw-{0}-lf5amogjcz-lf5amogjcz.gz
-/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/obj/Debug/net10.0/compressed/wkn5hwz9dy-{0}-lf5amogjcz-lf5amogjcz.gz
+/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/obj/Debug/net10.0/compressed/a806oa56zw-{0}-3z1a9v3p88-3z1a9v3p88.gz
+/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/obj/Debug/net10.0/compressed/wkn5hwz9dy-{0}-3z1a9v3p88-3z1a9v3p88.gz

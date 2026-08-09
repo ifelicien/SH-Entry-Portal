@@ -22,11 +22,13 @@ public class Member
     [StringLength(100)]
     public string Status { get; set; } = string.Empty;
 
+    [Required]
     [EmailAddress]
-    public string? Email { get; set; }
+    public string Email { get; set; }
 
+    [Required]
     [Phone]
-    public string? Phone { get; set; }
+    public string Phone { get; set; }
 
     public DateTime JoinedOn { get; set; } = DateTime.UtcNow;
 }

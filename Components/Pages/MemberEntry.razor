@@ -1,7 +1,8 @@
 @page "/members"
 @using SH_Entry_Portal.Models
 
-<div class="form-page">
+<EditForm Model="member" OnValidSubmit="HandleSubmit" FormName="addMember">
+    <DataAnnotationsValidator/>
     <div class="form-header">
         <h3>Member Entry</h3>
         <p class="text-muted">Complete all required fields and submit to register a new member.</p>
@@ -9,61 +10,69 @@
 
     <div class="card form-card">
         <div class="card-body">
-
             <h5 class="section-title">Personal Information</h5>
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
                     <label class="form-label">First Name</label>
-                    <input type="text" class="form-control" @bind="FirstName" placeholder="Jane" />
+                    <input type="text" class="form-control" @bind="member.FirstName" placeholder="Jane" />
+                    <ValidationMessage For="() => member.FirstName"/>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control" @bind="LastName" placeholder="Doe" />
+                    <input type="text" class="form-control" @bind="member.LastName" placeholder="Doe" />
+                    <ValidationMessage For="() => member.LastName"/>
                 </div>
             </div>
-
             <h5 class="section-title">Contact</h5>
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Phone</label>
-                    <input type="text" class="form-control" @bind="Phone" placeholder="123-456-7890" />
+                    <input type="text" class="form-control" @bind="member.Phone" placeholder="123-456-7890" />
+                    <ValidationMessage For="() => member.Phone"/>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Email</label>
-                    <input type="text" class="form-control" @bind="Email" placeholder="someone@somewhere.com" />
+                    <input type="text" class="form-control" @bind="member.Email" placeholder="someone@somewhere.com" />
+                    <ValidationMessage For="() => member.Email"/>
                 </div>
             </div>
-
             <h5 class="section-title">Membership</h5>
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <label class="form-label">Role</label>
-                    <input type="text" class="form-control" @bind="Role" placeholder="Member" />
+                    <input type="text" class="form-control" @bind="member.Role" placeholder="Member" />
+                    <ValidationMessage For="() => member.Role"/>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Status</label>
-                    <input type="text" class="form-control" @bind="Status" placeholder="Active" />
+                    <input type="text" class="form-control" @bind="member.Status" placeholder="Active" />
+                    <ValidationMessage For="() => member.Status"/>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Joined On</label>
-                    <input type="text" class="form-control" @bind="JoinedOn" placeholder="MM/DD/YYYY" />
+                    <input type="date" class="form-control" @bind="member.JoinedOn" placeholder="MM/DD/YYYY" />
+                    <ValidationMessage For="() => member.JoinedOn"/>
                 </div>
             </div>
-
             <div class="d-flex justify-content-end">
-                <button class="btn btn-primary px-4">Submit</button>
+                <button class="btn btn-primary px-4" type="submit">Submit</button>
             </div>
 
         </div>
     </div>
-</div>
+</EditForm>
 
 @code {
-    private string FirstName = "";
-    private string LastName = "";
-    private string Phone = "";
-    private string Email = "";
-    private string JoinedOn = "";
-    private string Status = "";
-    private string Role = "";
+    // The single member being filled out in the form
+    private Member member = new();
+    // Temporary in-memory store until database is wired up
+    private List<Member> members = new();
+    private bool submitted = false;
+
+    private void HandleSubmit()
+    {
+        members.Add(member);
+        submitted = true;
+        member = new();
+    }
 }
