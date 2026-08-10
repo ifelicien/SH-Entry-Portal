@@ -1,6 +1,7 @@
 @* Page: Member Entry — Form for adding a new sisterhood member; validates against the Member model *@
 @page "/members"
 @using SH_Entry_Portal.Models
+@inject SH_Entry_Portal.Services.MemberService MemberService
 
 @* Root: EditForm is the outer shell for this page — all inputs and validation live inside it *@
 <EditForm Model="member" OnValidSubmit="HandleSubmit" FormName="addMember">
@@ -82,13 +83,12 @@
 @code {
     // The single member being filled out in the form
     private Member member = new();
-    // Temporary in-memory store until database is wired up
-    private List<Member> members = new();
+
     private bool submitted = false;
 
     private void HandleSubmit()
     {
-        members.Add(member);
+        MemberService.AddMember(member);
         submitted = true;
         member = new();
     }

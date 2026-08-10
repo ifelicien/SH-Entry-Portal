@@ -1,10 +1,13 @@
 using SH_Entry_Portal.Components;
+using SH_Entry_Portal.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+    
+builder.Services.AddScoped<MemberService>();
 
 var app = builder.Build();
 
