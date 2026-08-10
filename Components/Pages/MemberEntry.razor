@@ -1,6 +1,8 @@
+@* Page: Member Entry — Form for adding a new sisterhood member; validates against the Member model *@
 @page "/members"
 @using SH_Entry_Portal.Models
 
+@* Root: EditForm is the outer shell for this page — all inputs and validation live inside it *@
 <EditForm Model="member" OnValidSubmit="HandleSubmit" FormName="addMember">
     <DataAnnotationsValidator/>
     <div class="form-header">
@@ -40,12 +42,27 @@
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <label class="form-label">Role</label>
-                    <input type="text" class="form-control" @bind="member.Role" placeholder="Member" />
+                    <InputSelect class="form-select" @bind-Value="member.Role">
+                        <option value="">-- Select Role --</option>
+                        <option value="Member">Member</option>
+                        <option value="Officer">Officer</option>
+                        <option value="President">President</option>
+                        <option value="Vice President">Vice President</option>
+                        <option value="Secretary">Secretary</option>
+                        <option value="Treasurer">Treasurer</option>
+                        <option value="Chaplain">Chaplain</option>
+                    </InputSelect>
                     <ValidationMessage For="() => member.Role"/>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Status</label>
-                    <input type="text" class="form-control" @bind="member.Status" placeholder="Active" />
+                    <InputSelect class="form-select" @bind-Value="member.Status">
+                        <option value="">-- Select Status --</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Honorary">Honorary</option>
+                    </InputSelect>
                     <ValidationMessage For="() => member.Status"/>
                 </div>
                 <div class="col-md-4">
