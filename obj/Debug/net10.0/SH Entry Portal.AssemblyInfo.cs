@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SH_Entry_Portal")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+763566831a2037e0368c35f03ff3b86684a4a6ed")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9e7501203b0a175a3096625344ba673ae9826ff4")]
 [assembly: System.Reflection.AssemblyProductAttribute("SH_Entry_Portal")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SH_Entry_Portal")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
