@@ -73,7 +73,9 @@
                 </div>
             </div>
             <div class="d-flex justify-content-end">
-                <button class="btn btn-primary px-4" type="submit">Submit</button>
+                <button class="btn btn-primary px-4" type="submit" disabled="@isSaving">
+                    @(isSaving ? "Saving..." : "Submit")
+                </button>
             </div>
 
         </div>
@@ -81,21 +83,33 @@
 </EditForm>
 
 @if (submitted)
-    {
-        <div class="alert alert-success">
-            Success
-        </div>
-    }
+{
+    <div class="alert alert-success">
+        Success
+    </div>
+}
 
 @code {
+    // Supplies the logged-in admin's identity, used to attribute this submission in the audit log
+    [CascadingParameter]
+    private Task<Microsoft.AspNetCore.Components.Authorization.AuthenticationState>? AuthState { get; set; }
+
     // The single member being filled out in the form
     private Member member = new() { Role = MemberRole.Member, Status = MemberStatus.Active, JoinedOn = DateOnly.FromDateTime(DateTime.Today) };
 
     private bool submitted = false;
-    private void HandleSubmit()
+    private bool isSaving = false;
+
+    private async Task HandleSubmit()
     {
-        MemberService.AddMember(member);
+        isSaving = true;
+        var authState = await AuthState!;
+        var email = authState.User.Identity?.Name ?? "unknown";
+
+        await MemberService.AddMemberAsync(member, email);
+
+        isSaving = false;
         submitted = true;
-        member = new();
+        member = new() { Role = MemberRole.Member, Status = MemberStatus.Active, JoinedOn = DateOnly.FromDateTime(DateTime.Today) };
     }
 }

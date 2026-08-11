@@ -5,6 +5,7 @@
 @using SH_Entry_Portal.Services
 
 @inject SH_Entry_Portal.Services.MemberService memberService
+@inject IJSRuntime JS
 @rendermode InteractiveServer
 
 <div class="manage-page">
@@ -13,132 +14,171 @@
         <p class="text-muted">Search for a member to edit, or view all records below.</p>
     </div>
 
-    @* --- Autocomplete search --- *@
-    <div class="search-wrapper mb-3">
-        <input type="text" class="form-control" placeholder="Search by name..." @bind="searchText" @bind:event="oninput" />
-        @if (FilteredMembers.Any())
-        {
-            <ul class="suggestion-list">
-                @foreach (var m in FilteredMembers)
-                {
-                    <li @onclick="() => SelectMember(m)">@m.FirstName @m.LastName</li>
-                }
-            </ul>
-        }
-    </div>
-
-    @* --- Inline edit form shown when a member is selected --- *@
-    @if (selectedMember != null)
+    @if (isLoading)
     {
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="section-title">Editing: @selectedMember.FirstName @selectedMember.LastName</h5>
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">First Name</label>
-                        <input type="text" class="form-control" @bind="selectedMember.FirstName" />
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" class="form-control" @bind="selectedMember.LastName" />
-                    </div>
-                </div>
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Email</label>
-                        <input type="text" class="form-control" @bind="selectedMember.Email" />
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Phone</label>
-                        <input type="text" class="form-control" @bind="selectedMember.Phone" />
-                    </div>
-                </div>
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Role</label>
-                        <InputSelect class="form-select" @bind-Value="selectedMember.Role">
-                            <option value="Member">Member</option>
-                            <option value="Officer">Officer</option>
-                            <option value="President">President</option>
-                            <option value="VicePresident">Vice President</option>
-                            <option value="Secretary">Secretary</option>
-                            <option value="Treasurer">Treasurer</option>
-                            <option value="Chaplain">Chaplain</option>
-                        </InputSelect>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Status</label>
-                        <InputSelect class="form-select" @bind-Value="selectedMember.Status">
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Honorary">Honorary</option>
-                        </InputSelect>
-                    </div>
-                </div>
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Joined On</label>
-                        <input type="date" class="form-control" @bind="selectedMember.JoinedOn" />
-                    </div>
-                </div>
-                <div class="d-flex gap-2 justify-content-end">
-                    <button class="btn btn-secondary" @onclick="() => selectedMember = null">Cancel</button>
-                    <button class="btn btn-primary" @onclick="SaveEdit">Save</button>
-                </div>
-            </div>
-        </div>
-    }
-
-    @if (memberService.GetMembers().Count == 0)
-    {
-        <div class="alert alert-info">No members added yet.</div>
+        <div class="alert alert-info">Loading members...</div>
     }
     else
     {
-        <div class="card manage-card">
-            <div class="card-body p-0">
-                <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var member in memberService.GetMembers())
-                        {
-                            <tr>
-                                <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@member.FirstName @member.LastName</td>
-                                <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@member.Email</td>
-                                <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@member.Phone</td>
-                                <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@FormatRole(member.Role)</td>
-                                <td class="@(member.Status == MemberStatus.Inactive ? "status-inactive" : "")">@member.Status</td>
-                                <td>
-                                    @if(member.Status == MemberStatus.Active){
-                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => SetInactive(member)">Set Inactive</button>
-                                    }
-                                    else{
-                                    <button class="btn btn-sm btn-outline-success" @onclick="() => SetActive(member)">Set Active</button>
-
-                                    }
-
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+        @* --- Autocomplete search --- *@
+        <div class="search-wrapper mb-3">
+            <input type="text" class="form-control" placeholder="Search by name..." @bind="searchText" @bind:event="oninput" />
+            @if (FilteredMembers.Any())
+            {
+                <ul class="suggestion-list">
+                    @foreach (var m in FilteredMembers)
+                    {
+                        <li @onclick="() => SelectMember(m)">@m.FirstName @m.LastName</li>
+                    }
+                </ul>
+            }
         </div>
+
+        @* --- Inline edit form shown when a member is selected --- *@
+        @if (selectedMember != null)
+        {
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="section-title">Editing: @selectedMember.FirstName @selectedMember.LastName</h5>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" @bind="selectedMember.FirstName" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control" @bind="selectedMember.LastName" />
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="text" class="form-control" @bind="selectedMember.Email" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input type="text" class="form-control" @bind="selectedMember.Phone" />
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Role</label>
+                            <InputSelect class="form-select" @bind-Value="selectedMember.Role">
+                                <option value="Member">Member</option>
+                                <option value="Officer">Officer</option>
+                                <option value="President">President</option>
+                                <option value="VicePresident">Vice President</option>
+                                <option value="Secretary">Secretary</option>
+                                <option value="Treasurer">Treasurer</option>
+                                <option value="Chaplain">Chaplain</option>
+                            </InputSelect>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <InputSelect class="form-select" @bind-Value="selectedMember.Status">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Honorary">Honorary</option>
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Joined On</label>
+                            <input type="date" class="form-control" @bind="selectedMember.JoinedOn" />
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button class="btn btn-secondary" @onclick="() => selectedMember = null">Cancel</button>
+                        <button class="btn btn-primary" @onclick="SaveEdit">Save</button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (members.Count == 0)
+        {
+            <div class="alert alert-info">No members added yet.</div>
+        }
+        else
+        {
+            <div class="card manage-card">
+                <div class="card-body p-0">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var member in PagedMembers)
+                            {
+                                <tr>
+                                    <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@member.FirstName @member.LastName</td>
+                                    <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@member.Email</td>
+                                    <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@member.Phone</td>
+                                    <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@FormatRole(member.Role)</td>
+                                    <td class="@(member.Status == MemberStatus.Inactive ? "status-inactive" : "")">@member.Status</td>
+                                    <td>
+                                        @if (member.Status == MemberStatus.Active)
+                                        {
+                                            <button class="btn btn-sm btn-outline-danger" @onclick="() => ConfirmSetInactive(member)">Set Inactive</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-outline-success" @onclick="() => ConfirmSetActive(member)">Set Active</button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @* --- Pagination controls --- *@
+            @if (TotalPages > 1)
+            {
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <button class="btn btn-sm btn-outline-secondary" disabled="@(currentPage == 1)" @onclick="() => currentPage--">Previous</button>
+                    <span>Page @currentPage of @TotalPages</span>
+                    <button class="btn btn-sm btn-outline-secondary" disabled="@(currentPage == TotalPages)" @onclick="() => currentPage++">Next</button>
+                </div>
+            }
+        }
     }
 </div>
 
-@code{
+@code {
+    // Supplies the logged-in admin's identity, used to attribute status/edit changes in the audit log
+    [CascadingParameter]
+    private Task<Microsoft.AspNetCore.Components.Authorization.AuthenticationState>? AuthState { get; set; }
+
+    private List<Member> members = new();
+    private bool isLoading = true;
     private Member? selectedMember = null;
+    private string searchText = "";
+
+    private int currentPage = 1;
+    private const int PageSize = 10;
+
+    protected override async Task OnInitializedAsync()
+    {
+        members = await memberService.GetMembersAsync();
+        isLoading = false;
+    }
+
+    private async Task<string> GetCurrentUserEmailAsync()
+    {
+        var authState = await AuthState!;
+        return authState.User.Identity?.Name ?? "unknown";
+    }
 
     private void SelectMember(Member m)
     {
@@ -146,19 +186,33 @@
         searchText = "";
     }
 
-    private void SetInactive(Member m){
-        m.Status = MemberStatus.Inactive;
-        memberService.SaveChanges();
-    }
-
-    private void SetActive(Member m){
-        m.Status = MemberStatus.Active;
-        memberService.SaveChanges();
-    }
-
-    private void SaveEdit()
+    private async Task ConfirmSetInactive(Member m)
     {
-        memberService.SaveChanges();
+        var confirmed = await JS.InvokeAsync<bool>("confirm", $"Set {m.FirstName} {m.LastName} to Inactive?");
+        if (!confirmed) return;
+
+        m.Status = MemberStatus.Inactive;
+        var email = await GetCurrentUserEmailAsync();
+        await memberService.SaveChangesAsync(m.Id, "SetInactive", email);
+    }
+
+    private async Task ConfirmSetActive(Member m)
+    {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", $"Set {m.FirstName} {m.LastName} to Active?");
+        if (!confirmed) return;
+
+        m.Status = MemberStatus.Active;
+        var email = await GetCurrentUserEmailAsync();
+        await memberService.SaveChangesAsync(m.Id, "SetActive", email);
+    }
+
+    private async Task SaveEdit()
+    {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", "Save changes to this member?");
+        if (!confirmed) return;
+
+        var email = await GetCurrentUserEmailAsync();
+        await memberService.SaveChangesAsync(selectedMember!.Id, "Updated", email);
         selectedMember = null;
     }
 
@@ -166,11 +220,16 @@
     private string FormatRole(MemberRole role) =>
         role == MemberRole.VicePresident ? "Vice President" : role.ToString();
 
-    private string searchText = "";
-
+    // Powers the autocomplete suggestion list; only searches once at least 2 characters are typed
     public List<Member> FilteredMembers =>
         searchText.Length < 2 ? new List<Member>() :
-        memberService.GetMembers()
-        .Where(m => m.FirstName.Contains(searchText,StringComparison.OrdinalIgnoreCase) || m.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase)) 
-        .ToList();
+        members
+            .Where(m => m.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                     || m.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+    private int TotalPages => (int)Math.Ceiling(members.Count / (double)PageSize);
+
+    private List<Member> PagedMembers =>
+        members.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
 }

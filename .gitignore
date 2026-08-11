@@ -1,0 +1,19 @@
+## .NET build artifacts
+bin/
+obj/
+
+## Visual Studio / VS Code
+.vs/
+.vscode/*
+!.vscode/extensions.json
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## User-specific files
+*.user
+*.suo
+
+## Logs
+*.log

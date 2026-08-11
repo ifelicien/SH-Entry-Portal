@@ -16,7 +16,7 @@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/members">
-            <span class="bi bi-plus-square-fill-nav-menu" aria-hidden=true></span> Add Members
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Add Members
             </NavLink>
         </div>
 
@@ -26,6 +26,7 @@
             </NavLink>
         </div>
 
+        @* Reflects the real cookie-based auth state; Logout posts directly to the server (no Blazor event binding) *@
         <div class="nav-item px-3">
             <AuthorizeView>
                 <Authorized>

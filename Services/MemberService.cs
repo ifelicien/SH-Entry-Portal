@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SH_Entry_Portal.Data;
 using SH_Entry_Portal.Models.Generated;
 
@@ -12,20 +13,34 @@ public class MemberService
         _context = context;
     }
 
-    public List<Member> GetMembers()
+    public async Task<List<Member>> GetMembersAsync()
     {
-        return _context.Members.ToList();
+        return await _context.Members.ToListAsync();
     }
 
-    public void AddMember(Member m)
+    public async Task AddMemberAsync(Member m, string changedBy)
     {
         _context.Members.Add(m);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
+        await LogAuditAsync(m.Id, "Created", changedBy);
     }
 
-    // Persists in-place edits made to a tracked Member (status changes, inline edits)
-    public void SaveChanges()
+    // Persists in-place edits made to a tracked Member (status changes, inline edits) and logs who made them
+    public async Task SaveChangesAsync(Guid memberId, string action, string changedBy)
     {
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
+        await LogAuditAsync(memberId, action, changedBy);
+    }
+
+    private async Task LogAuditAsync(Guid memberId, string action, string changedBy)
+    {
+        _context.AuditLogs.Add(new AuditLog
+        {
+            MemberId = memberId,
+            Action = action,
+            ChangedBy = changedBy,
+            ChangedAt = DateTime.UtcNow
+        });
+        await _context.SaveChangesAsync();
     }
 }

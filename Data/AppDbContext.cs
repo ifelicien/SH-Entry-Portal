@@ -15,27 +15,16 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Member> Members { get; set; }
 
+    // Manually added: audit trail for member changes
+    public virtual DbSet<AuditLog> AuditLogs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Explicit null translator: without it, Npgsql snake_cases enum labels (e.g. "Member" -> "member"),
+        // which don't match the actual Postgres enum values we defined
         modelBuilder
-            .HasPostgresEnum("auth", "aal_level", new[] { "aal1", "aal2", "aal3" })
-            .HasPostgresEnum("auth", "code_challenge_method", new[] { "s256", "plain" })
-            .HasPostgresEnum("auth", "factor_status", new[] { "unverified", "verified" })
-            .HasPostgresEnum("auth", "factor_type", new[] { "totp", "webauthn", "phone" })
-            .HasPostgresEnum("auth", "oauth_authorization_status", new[] { "pending", "approved", "denied", "expired" })
-            .HasPostgresEnum("auth", "oauth_client_type", new[] { "public", "confidential" })
-            .HasPostgresEnum("auth", "oauth_registration_type", new[] { "dynamic", "manual" })
-            .HasPostgresEnum("auth", "oauth_response_type", new[] { "code" })
-            .HasPostgresEnum("auth", "one_time_token_type", new[] { "confirmation_token", "reauthentication_token", "recovery_token", "email_change_token_new", "email_change_token_current", "phone_change_token" })
             .HasPostgresEnum<MemberRole>(nameTranslator: new NpgsqlNullNameTranslator())
-            .HasPostgresEnum<MemberStatus>(nameTranslator: new NpgsqlNullNameTranslator())
-            .HasPostgresEnum("realtime", "action", new[] { "INSERT", "UPDATE", "DELETE", "TRUNCATE", "ERROR" })
-            .HasPostgresEnum("realtime", "equality_op", new[] { "eq", "neq", "lt", "lte", "gt", "gte", "in", "like", "ilike", "is", "match", "imatch", "isdistinct" })
-            .HasPostgresEnum("storage", "buckettype", new[] { "STANDARD", "ANALYTICS", "VECTOR" })
-            .HasPostgresExtension("extensions", "pg_stat_statements")
-            .HasPostgresExtension("extensions", "pgcrypto")
-            .HasPostgresExtension("extensions", "uuid-ossp")
-            .HasPostgresExtension("vault", "supabase_vault");
+            .HasPostgresEnum<MemberStatus>(nameTranslator: new NpgsqlNullNameTranslator());
 
         modelBuilder.Entity<Member>(entity =>
         {
@@ -63,6 +52,17 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("updated_at");
+        });
+
+        modelBuilder.Entity<AuditLog>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.ToTable("audit_log");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.MemberId).HasColumnName("member_id");
+            entity.Property(e => e.Action).HasColumnName("action");
+            entity.Property(e => e.ChangedBy).HasColumnName("changed_by");
+            entity.Property(e => e.ChangedAt).HasDefaultValueSql("now()").HasColumnName("changed_at");
         });
 
         OnModelCreatingPartial(modelBuilder);

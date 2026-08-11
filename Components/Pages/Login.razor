@@ -13,6 +13,7 @@
             }
 
             <form method="post" action="/auth/login" data-enhance="false">
+                <AntiforgeryToken />
                 <div class="mb-3">
                     <label class="form-label">Email</label>
                     <input type="email" name="email" class="form-control" required />
@@ -21,6 +22,7 @@
                     <label class="form-label">Password</label>
                     <div class="input-group">
                         <input type="password" name="password" id="pwd" class="form-control" required />
+                        @* Plain inline JS toggle — no Blazor interactivity needed for this static form *@
                         <button class="btn btn-outline-secondary" type="button"
                                 onclick="var p=document.getElementById('pwd'); p.type = p.type==='password' ? 'text' : 'password'; this.textContent = p.type==='password' ? 'Show' : 'Hide';">
                             Show
