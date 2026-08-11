@@ -2,9 +2,10 @@
 @page "/members"
 @using SH_Entry_Portal.Models
 @inject SH_Entry_Portal.Services.MemberService MemberService
+@rendermode InteractiveServer
 
 @* Root: EditForm is the outer shell for this page — all inputs and validation live inside it *@
-<EditForm Model="member" OnValidSubmit="HandleSubmit" FormName="addMember">
+<EditForm Model="member" OnValidSubmit="HandleSubmit">
     <DataAnnotationsValidator/>
     <div class="form-header">
         <h3>Member Entry</h3>
@@ -80,12 +81,17 @@
     </div>
 </EditForm>
 
+@if (submitted)
+    {
+        <div class="alert alert-success">
+            Success
+        </div>
+    }
+
 @code {
     // The single member being filled out in the form
     private Member member = new();
-
     private bool submitted = false;
-
     private void HandleSubmit()
     {
         MemberService.AddMember(member);

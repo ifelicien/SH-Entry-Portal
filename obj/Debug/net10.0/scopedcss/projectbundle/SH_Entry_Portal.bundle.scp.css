@@ -369,6 +369,62 @@ main[b-djasch5005] {
         opacity: 0;
     }
 }
+/* /Components/Pages/ManageMembers.razor.rz.scp.css */
+.manage-page[b-9358hf9kh4] {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.manage-header[b-9358hf9kh4] {
+    margin-bottom: 1.5rem;
+}
+
+.manage-header h3[b-9358hf9kh4] {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.manage-card[b-9358hf9kh4] {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.status-inactive[b-9358hf9kh4] {
+    color: red;
+    font-weight: 600;
+}
+
+.search-wrapper[b-9358hf9kh4] {
+    position: relative;
+}
+
+.suggestion-list[b-9358hf9kh4] {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.suggestion-list li[b-9358hf9kh4] {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.suggestion-list li:hover[b-9358hf9kh4] {
+    background-color: #f0f0f0;
+}
 /* /Components/Pages/MemberEntry.razor.rz.scp.css */
 .form-page[b-6ffag7gsd1] {
     max-width: 860px;
