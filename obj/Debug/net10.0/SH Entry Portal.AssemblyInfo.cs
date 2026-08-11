@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SH_Entry_Portal")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6e280d7ac96087fdca3336aea036a1ee480aea86")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ba0c6637a492aa8abec47773d53159ff965912a0")]
 [assembly: System.Reflection.AssemblyProductAttribute("SH_Entry_Portal")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SH_Entry_Portal")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
