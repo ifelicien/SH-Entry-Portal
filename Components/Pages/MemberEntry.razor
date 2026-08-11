@@ -1,11 +1,12 @@
 @* Page: Member Entry — Form for adding a new sisterhood member; validates against the Member model *@
 @page "/members"
-@using SH_Entry_Portal.Models
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@using SH_Entry_Portal.Models.Generated
 @inject SH_Entry_Portal.Services.MemberService MemberService
 @rendermode InteractiveServer
 
 @* Root: EditForm is the outer shell for this page — all inputs and validation live inside it *@
-<EditForm Model="member" OnValidSubmit="HandleSubmit">
+<EditForm Model="member" OnValidSubmit="HandleSubmit" FormName="addMember">
     <DataAnnotationsValidator/>
     <div class="form-header">
         <h3>Member Entry</h3>
@@ -42,24 +43,22 @@
             </div>
             <h5 class="section-title">Membership</h5>
             <div class="row g-3 mb-4">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="form-label">Role</label>
                     <InputSelect class="form-select" @bind-Value="member.Role">
-                        <option value="">-- Select Role --</option>
                         <option value="Member">Member</option>
                         <option value="Officer">Officer</option>
                         <option value="President">President</option>
-                        <option value="Vice President">Vice President</option>
+                        <option value="VicePresident">Vice President</option>
                         <option value="Secretary">Secretary</option>
                         <option value="Treasurer">Treasurer</option>
                         <option value="Chaplain">Chaplain</option>
                     </InputSelect>
                     <ValidationMessage For="() => member.Role"/>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="form-label">Status</label>
                     <InputSelect class="form-select" @bind-Value="member.Status">
-                        <option value="">-- Select Status --</option>
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
                         <option value="Pending">Pending</option>
@@ -67,9 +66,9 @@
                     </InputSelect>
                     <ValidationMessage For="() => member.Status"/>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="form-label">Joined On</label>
-                    <input type="date" class="form-control" @bind="member.JoinedOn" placeholder="MM/DD/YYYY" />
+                    <input type="date" class="form-control" @bind="member.JoinedOn" />
                     <ValidationMessage For="() => member.JoinedOn"/>
                 </div>
             </div>
@@ -90,7 +89,8 @@
 
 @code {
     // The single member being filled out in the form
-    private Member member = new();
+    private Member member = new() { Role = MemberRole.Member, Status = MemberStatus.Active, JoinedOn = DateOnly.FromDateTime(DateTime.Today) };
+
     private bool submitted = false;
     private void HandleSubmit()
     {

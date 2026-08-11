@@ -1,6 +1,7 @@
 @page "/manage"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
-@using SH_Entry_Portal.Models
+@using SH_Entry_Portal.Models.Generated
 @using SH_Entry_Portal.Services
 
 @inject SH_Entry_Portal.Services.MemberService memberService
@@ -53,19 +54,19 @@
                     </div>
                 </div>
                 <div class="row g-3 mb-3">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="form-label">Role</label>
                         <InputSelect class="form-select" @bind-Value="selectedMember.Role">
                             <option value="Member">Member</option>
                             <option value="Officer">Officer</option>
                             <option value="President">President</option>
-                            <option value="Vice President">Vice President</option>
+                            <option value="VicePresident">Vice President</option>
                             <option value="Secretary">Secretary</option>
                             <option value="Treasurer">Treasurer</option>
                             <option value="Chaplain">Chaplain</option>
                         </InputSelect>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="form-label">Status</label>
                         <InputSelect class="form-select" @bind-Value="selectedMember.Status">
                             <option value="Active">Active</option>
@@ -74,14 +75,16 @@
                             <option value="Honorary">Honorary</option>
                         </InputSelect>
                     </div>
-                    <div class="col-md-4">
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
                         <label class="form-label">Joined On</label>
                         <input type="date" class="form-control" @bind="selectedMember.JoinedOn" />
                     </div>
                 </div>
                 <div class="d-flex gap-2 justify-content-end">
                     <button class="btn btn-secondary" @onclick="() => selectedMember = null">Cancel</button>
-                    <button class="btn btn-primary" @onclick="() => selectedMember = null">Save</button>
+                    <button class="btn btn-primary" @onclick="SaveEdit">Save</button>
                 </div>
             </div>
         </div>
@@ -113,10 +116,10 @@
                                 <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@member.FirstName @member.LastName</td>
                                 <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@member.Email</td>
                                 <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@member.Phone</td>
-                                <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@member.Role</td>
-                                <td class="@(member.Status == "Inactive" ? "status-inactive" : "")">@member.Status</td>
+                                <td @onclick="() => SelectMember(member)" style="cursor: pointer;">@FormatRole(member.Role)</td>
+                                <td class="@(member.Status == MemberStatus.Inactive ? "status-inactive" : "")">@member.Status</td>
                                 <td>
-                                    @if(member.Status == "Active"){
+                                    @if(member.Status == MemberStatus.Active){
                                     <button class="btn btn-sm btn-outline-danger" @onclick="() => SetInactive(member)">Set Inactive</button>
                                     }
                                     else{
@@ -144,12 +147,24 @@
     }
 
     private void SetInactive(Member m){
-        m.Status="Inactive";
+        m.Status = MemberStatus.Inactive;
+        memberService.SaveChanges();
     }
 
     private void SetActive(Member m){
-        m.Status="Active";
+        m.Status = MemberStatus.Active;
+        memberService.SaveChanges();
     }
+
+    private void SaveEdit()
+    {
+        memberService.SaveChanges();
+        selectedMember = null;
+    }
+
+    // Displays "Vice President" instead of the raw enum member name "VicePresident"
+    private string FormatRole(MemberRole role) =>
+        role == MemberRole.VicePresident ? "Vice President" : role.ToString();
 
     private string searchText = "";
 

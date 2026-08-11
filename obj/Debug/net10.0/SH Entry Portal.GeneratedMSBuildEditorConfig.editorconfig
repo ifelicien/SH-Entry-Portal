@@ -1,15 +1,23 @@
 is_global = true
 build_property.TargetFramework = net10.0
-build_property.TargetFrameworkIdentifier = .NETCoreApp
-build_property.TargetFrameworkVersion = v10.0
+build_property.TargetFramework = net10.0
+build_property.TargetPlatformMinVersion = 
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
 build_property.ProjectTypeGuids = 
 build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
-build_property.EntryPointFilePath = 
+build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v10.0
+build_property.EntryPointFilePath = 
 build_property.RootNamespace = SH_Entry_Portal
 build_property.RootNamespace = SH_Entry_Portal
 build_property.ProjectDir = /Users/irwinfelicien/Desktop/Coding/SH Entry Portal/
@@ -27,10 +35,6 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9BcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Pages/Counter.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Db3VudGVyLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9FcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -41,10 +45,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Pages/NotFound.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Ob3RGb3VuZC5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Pages/Weather.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9XZWF0aGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Routes.razor]
@@ -66,6 +66,10 @@ build_metadata.AdditionalFiles.CssScope = b-11r3i7epbk
 [/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Layout/ReconnectModal.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvUmVjb25uZWN0TW9kYWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-dqekpiu3t1
+
+[/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-h499b0ig0h
 
 [/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Pages/ManageMembers.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9NYW5hZ2VNZW1iZXJzLnJhem9y

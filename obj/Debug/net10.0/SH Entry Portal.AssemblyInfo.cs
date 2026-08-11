@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("5be0cfa7-965a-453c-810b-c81f12eac8e3")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("SH_Entry_Portal")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ba0c6637a492aa8abec47773d53159ff965912a0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2f7bbd73f08c89278cf4c58ddc359774ebfb402d")]
 [assembly: System.Reflection.AssemblyProductAttribute("SH_Entry_Portal")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SH_Entry_Portal")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

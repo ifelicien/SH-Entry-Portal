@@ -1,0 +1,42 @@
+@* Page: Login — Posts to /auth/login as a real HTTP form so the browser reliably receives the auth cookie *@
+@page "/login"
+
+@* Root: centered login card *@
+<div class="login-page">
+    <div class="card login-card">
+        <div class="card-body">
+            <h3 class="mb-3">Admin Login</h3>
+
+            @if (HasError)
+            {
+                <div class="alert alert-danger">Invalid email or password.</div>
+            }
+
+            <form method="post" action="/auth/login" data-enhance="false">
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <input type="password" name="password" id="pwd" class="form-control" required />
+                        <button class="btn btn-outline-secondary" type="button"
+                                onclick="var p=document.getElementById('pwd'); p.type = p.type==='password' ? 'text' : 'password'; this.textContent = p.type==='password' ? 'Show' : 'Hide';">
+                            Show
+                        </button>
+                    </div>
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Sign In</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "error")]
+    public string? ErrorParam { get; set; }
+
+    private bool HasError => !string.IsNullOrEmpty(ErrorParam);
+}
+
