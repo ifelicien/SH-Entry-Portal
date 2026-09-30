@@ -17,6 +17,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddScoped<MemberService>();
+builder.Services.AddScoped<EventService>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<AuthService>();
 

@@ -39,8 +39,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9FcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Pages/Events.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9FdmVudHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Ib21lLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Pages/ManageEvents.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9NYW5hZ2VFdmVudHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/irwinfelicien/Desktop/Coding/SH Entry Portal/Components/Pages/NotFound.razor]
