@@ -1,0 +1,203 @@
+@* Page: Manage Events — Search for an event to edit, or delete it entirely *@
+@page "/manage-events"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+@using SH_Entry_Portal.Models.Generated
+@using SH_Entry_Portal.Services
+
+@inject SH_Entry_Portal.Services.EventService EventService
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
+<div class="manage-page">
+    <div class="manage-header">
+        <h3>Manage Events</h3>
+        <p class="text-muted">Search for an event to edit, or view all events below.</p>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="alert alert-info">Loading events...</div>
+    }
+    else
+    {
+        @* --- Autocomplete search --- *@
+        <div class="search-wrapper mb-3">
+            <input type="text" class="form-control" placeholder="Search by event name..." @bind="searchText" @bind:event="oninput" />
+            @if (FilteredEvents.Any())
+            {
+                <ul class="suggestion-list">
+                    @foreach (var ev in FilteredEvents)
+                    {
+                        <li @onclick="() => SelectEvent(ev)">@ev.Name</li>
+                    }
+                </ul>
+            }
+        </div>
+
+        @* --- Inline edit form shown when an event is selected --- *@
+        @if (selectedEvent != null)
+        {
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="section-title">Editing: @selectedEvent.Name</h5>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Event Name</label>
+                            <input type="text" class="form-control" @bind="selectedEvent.Name" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-control" @bind="selectedEvent.Location" />
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Date &amp; Time</label>
+                            <input type="datetime-local" class="form-control" @bind="selectedEvent.EventTime" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label d-block">Paid Event?</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" @bind="selectedEvent.IsPaid" id="editIsPaidCheck" />
+                                <label class="form-check-label" for="editIsPaidCheck">@(selectedEvent.IsPaid ? "Paid" : "Free")</label>
+                            </div>
+                        </div>
+                        @if (selectedEvent.IsPaid)
+                        {
+                            <div class="col-md-3">
+                                <label class="form-label">Price ($)</label>
+                                <input type="number" step="0.01" min="0" class="form-control" @bind="selectedEvent.Price" />
+                            </div>
+                        }
+                    </div>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button class="btn btn-secondary" @onclick="() => selectedEvent = null">Cancel</button>
+                        <button class="btn btn-outline-danger" @onclick="() => ConfirmDelete(selectedEvent)">Delete</button>
+                        <button class="btn btn-primary" @onclick="SaveEdit">Save</button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (events.Count == 0)
+        {
+            <div class="alert alert-info">No events added yet.</div>
+        }
+        else
+        {
+            <div class="card manage-card">
+                <div class="card-body p-0">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Location</th>
+                                <th>Date &amp; Time</th>
+                                <th>Paid/Free</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ev in PagedEvents)
+                            {
+                                <tr>
+                                    <td @onclick="() => SelectEvent(ev)" style="cursor: pointer;">@ev.Name</td>
+                                    <td @onclick="() => SelectEvent(ev)" style="cursor: pointer;">@ev.Location</td>
+                                    <td @onclick="() => SelectEvent(ev)" style="cursor: pointer;">@ev.EventTime.ToString("MMM d, yyyy h:mm tt")</td>
+                                    <td @onclick="() => SelectEvent(ev)" style="cursor: pointer;">@(ev.IsPaid ? $"Paid (${ev.Price:0.00})" : "Free")</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger" @onclick="() => ConfirmDelete(ev)">Delete</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @* --- Pagination controls --- *@
+            @if (TotalPages > 1)
+            {
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <button class="btn btn-sm btn-outline-secondary" disabled="@(currentPage == 1)" @onclick="() => currentPage--">Previous</button>
+                    <span>Page @currentPage of @TotalPages</span>
+                    <button class="btn btn-sm btn-outline-secondary" disabled="@(currentPage == TotalPages)" @onclick="() => currentPage++">Next</button>
+                </div>
+            }
+        }
+    }
+</div>
+
+@code {
+    // Supplies the logged-in admin's identity, used to attribute edits/deletes in the audit log
+    [CascadingParameter]
+    private Task<Microsoft.AspNetCore.Components.Authorization.AuthenticationState>? AuthState { get; set; }
+
+    private List<Event> events = new();
+    private bool isLoading = true;
+    private Event? selectedEvent = null;
+    private string searchText = "";
+
+    private int currentPage = 1;
+    private const int PageSize = 10;
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = await EventService.GetEventsAsync();
+        isLoading = false;
+    }
+
+    private async Task<string> GetCurrentUserEmailAsync()
+    {
+        var authState = await AuthState!;
+        return authState.User.Identity?.Name ?? "unknown";
+    }
+
+    private void SelectEvent(Event ev)
+    {
+        selectedEvent = ev;
+        searchText = "";
+    }
+
+    private async Task SaveEdit()
+    {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", "Save changes to this event?");
+        if (!confirmed) return;
+
+        if (!selectedEvent!.IsPaid)
+        {
+            selectedEvent.Price = null;
+        }
+
+        var email = await GetCurrentUserEmailAsync();
+        await EventService.SaveChangesAsync(selectedEvent.Id, "Updated", email);
+        selectedEvent = null;
+    }
+
+    private async Task ConfirmDelete(Event ev)
+    {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", $"Delete event \"{ev.Name}\"? This cannot be undone.");
+        if (!confirmed) return;
+
+        var email = await GetCurrentUserEmailAsync();
+        await EventService.DeleteEventAsync(ev, email);
+        events = await EventService.GetEventsAsync();
+        if (selectedEvent == ev)
+        {
+            selectedEvent = null;
+        }
+    }
+
+    // Powers the autocomplete suggestion list; only searches once at least 2 characters are typed
+    public List<Event> FilteredEvents =>
+        searchText.Length < 2 ? new List<Event>() :
+        events
+            .Where(ev => ev.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+    private int TotalPages => (int)Math.Ceiling(events.Count / (double)PageSize);
+
+    private List<Event> PagedEvents =>
+        events.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
+}
