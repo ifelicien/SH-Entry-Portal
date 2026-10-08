@@ -1,5 +1,8 @@
 ﻿@* Page: Home — Portal landing page with quick navigation and status info *@
 @page "/"
+@using SH_Entry_Portal.Data
+@inject AppDbContext DbContext
+@rendermode InteractiveServer
 
 @* Root: page content starts here — no wrapping layout div needed, MainLayout provides the shell *@
 <div class="card mb-4">
@@ -18,7 +21,25 @@
             <div class="card-body">
                 <h2 class="h6">Portal Status</h2>
                 <p class="mb-1"><strong>App:</strong> Running</p>
-                <p class="mb-0"><strong>Last checked:</strong> @lastChecked</p>
+                <p class="mb-1">
+                    <strong>Database:</strong>
+                    @if (isChecking)
+                    {
+                        <span class="text-muted">Checking...</span>
+                    }
+                    else if (isDatabaseOnline)
+                    {
+                        <span class="text-success">Online</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Unreachable (may be paused)</span>
+                    }
+                </p>
+                <p class="mb-2"><strong>Last checked:</strong> @lastChecked</p>
+                <button class="btn btn-sm btn-outline-secondary" disabled="@isChecking" @onclick="CheckDatabaseStatus">
+                    @(isChecking ? "Checking..." : "Refresh")
+                </button>
             </div>
         </div>
     </div>
@@ -53,5 +74,29 @@
 </p>
 
 @code {
-    private readonly string lastChecked = DateTime.Now.ToString("f");
+    private bool isDatabaseOnline = false;
+    private bool isChecking = true;
+    private string lastChecked = "Never";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CheckDatabaseStatus();
+    }
+
+    private async Task CheckDatabaseStatus()
+    {
+        isChecking = true;
+        try
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            isDatabaseOnline = await DbContext.Database.CanConnectAsync(cts.Token);
+        }
+        catch
+        {
+            isDatabaseOnline = false;
+        }
+
+        lastChecked = DateTime.Now.ToString("f");
+        isChecking = false;
+    }
 }
