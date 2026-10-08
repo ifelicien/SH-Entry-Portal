@@ -62,7 +62,7 @@ dotnet user-secrets set "Supabase:AnonKey" "<your Supabase publishable/anon key>
 The Supabase project URL is stored in `appsettings.json` under `Supabase:Url` (safe to commit — it's not a secret).
 
 ### Database schema
-The `members` table requires these columns: `id` (uuid), `first_name`, `last_name`, `phone`, `email`, `role` (enum: Member, Officer, President, Vice President, Secretary, Treasurer, Chaplain), `status` (enum: Active, Inactive, Pending, Honorary), `joined_on` (date), `created_at`, `updated_at`.
+The `members` table requires these columns: `id` (uuid), `first_name`, `last_name`, `phone`, `email`, `role` (enum: Member, Leadership, President, Vice President), `status` (enum: Active, Inactive, Pending, Honorary — Honorary is reserved for future use and hidden from the UI dropdown), `joined_on` (date), `created_at`, `updated_at`.
 
 An `audit_log` table tracks changes: `id`, `member_id`, `action`, `changed_by`, `changed_at`.
 

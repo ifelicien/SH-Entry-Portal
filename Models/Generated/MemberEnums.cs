@@ -7,13 +7,10 @@ namespace SH_Entry_Portal.Models.Generated;
 public enum MemberRole
 {
     Member,
-    Officer,
+    Leadership,
     President,
     [PgName("Vice President")]
-    VicePresident,
-    Secretary,
-    Treasurer,
-    Chaplain
+    VicePresident
 }
 
 public enum MemberStatus
