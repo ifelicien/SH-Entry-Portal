@@ -134,4 +134,30 @@ app.MapPost("/auth/logout", async (HttpContext context) =>
     return Results.Redirect("/login");
 });
 
+// Unauthenticated on purpose: used by the Home page status card and an external scheduled ping
+// (GitHub Actions) to keep the Supabase project from auto-pausing due to inactivity.
+app.MapGet("/health", async (AppDbContext db) =>
+{
+    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+    try
+    {
+        var reachable = await db.Database.CanConnectAsync(cts.Token);
+        return Results.Ok(new
+        {
+            status = reachable ? "ok" : "unreachable",
+            database = reachable ? "reachable" : "unreachable",
+            checkedAtUtc = DateTime.UtcNow
+        });
+    }
+    catch (Exception)
+    {
+        return Results.Ok(new
+        {
+            status = "unreachable",
+            database = "unreachable",
+            checkedAtUtc = DateTime.UtcNow
+        });
+    }
+});
+
 app.Run();

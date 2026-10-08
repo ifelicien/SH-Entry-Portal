@@ -1,0 +1,15 @@
+name: Keep-alive ping
+
+# Pings the /health endpoint on a schedule so Supabase doesn't auto-pause the
+# project after a period of inactivity, and keeps the Azure App Service warm.
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        run: curl -fsS https://sh-entry-portal-app.azurewebsites.net/health

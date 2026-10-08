@@ -6,11 +6,13 @@ A member entry and management portal for the sisterhood organization, built with
 
 - **Member Entry** — add new members with validated fields (name, contact info, role, status, join date)
 - **Manage Members** — searchable/autocomplete member list, inline editing, Active/Inactive status toggle, pagination
+- **Events** — add, search/edit, and delete sisterhood events (name, location, date/time, paid/free + price)
 - **Admin Authentication** — real Supabase Auth login, backed by ASP.NET Core cookie authentication
 - **Session security** — 5-minute idle timeout, logout on tab/browser close, manual logout
-- **Audit trail** — every member creation, status change, and edit is logged with who made the change and when
+- **Audit trail** — every member/event creation, status change, edit, and deletion is logged with who made the change and when
 - **Rate limiting** — login attempts are throttled to slow down brute-force attempts
 - **CSRF protection** on the login form
+- **Health check + keep-alive** — `/health` endpoint reports live Supabase connectivity (shown on the Home page), pinged on a schedule via GitHub Actions to prevent the Supabase free-tier project from auto-pausing due to inactivity
 
 ## Tech Stack
 
@@ -25,17 +27,21 @@ A member entry and management portal for the sisterhood organization, built with
 ```
 Components/
   Layout/         Shared layout and navigation
-  Pages/          Routable pages (Home, Login, MemberEntry, ManageMembers)
+  Pages/          Routable pages (Home, Login, MemberEntry, ManageMembers, Events, ManageEvents)
 Data/
-  AppDbContext.cs EF Core database context (Members, AuditLogs)
+  AppDbContext.cs EF Core database context (Members, AuditLogs, Events, EventAuditLogs)
 Models/
-  Generated/      Member model, enums (MemberRole, MemberStatus), AuditLog
+  Generated/      Member/Event models, enums (MemberRole, MemberStatus), AuditLog, EventAuditLog
 Services/
   MemberService.cs  Member CRUD + audit logging
+  EventService.cs   Event CRUD + audit logging
   AuthService.cs    Supabase Auth credential verification
 wwwroot/
   idle-logout.js  Client-side idle timeout / tab-close logout
-Program.cs        App startup, auth, rate limiting, DB configuration, auth endpoints
+Program.cs        App startup, auth, rate limiting, DB configuration, auth + health endpoints
+.github/workflows/
+  main_sh-entry-portal-app.yml  CI/CD — build and deploy to Azure
+  keep-alive.yml                Scheduled ping of /health to keep Supabase/Azure warm
 ```
 
 ## Local Development Setup
@@ -73,6 +79,10 @@ Then open `http://localhost:5055`.
 Deployed on **Azure App Service** (resource group `sh-entry-portal-rg`, app name `sh-entry-portal-app`). Any push to `main` triggers an automatic build and deploy via the GitHub Actions workflow in `.github/workflows/`.
 
 Production secrets (Supabase connection string and anon key) are configured as Azure App Service application settings — never stored in the repository.
+
+### Keeping Supabase/Azure warm
+
+Supabase free-tier projects auto-pause after a period of inactivity. A scheduled GitHub Actions workflow (`.github/workflows/keep-alive.yml`) curls the app's `/health` endpoint every 6 hours, which performs a lightweight `CanConnectAsync` check against the database — keeping Supabase active and warming up the Azure App Service. The same check powers the "Portal Status" card on the Home page. Note: the Azure F1 free tier doesn't support "Always On", so the app can still cold-start between pings; upgrading to a Basic tier or higher removes that limitation.
 
 ## Security Notes
 
