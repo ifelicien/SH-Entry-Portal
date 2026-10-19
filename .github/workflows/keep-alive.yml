@@ -12,4 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping health endpoint
-        run: curl -fsS https://sh-entry-portal-app.azurewebsites.net/health
+        # Retries tolerate a cold-start hiccup (F1 tier has no Always On, so the
+        # first request after idle can transiently fail while the app wakes up)
+        run: curl -fsS --retry 5 --retry-delay 10 --retry-all-errors https://sh-entry-portal-app.azurewebsites.net/health
