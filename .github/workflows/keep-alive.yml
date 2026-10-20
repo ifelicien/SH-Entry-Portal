@@ -4,7 +4,7 @@ name: Keep-alive ping
 # project after a period of inactivity, and keeps the Azure App Service warm.
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 12 * * *"
   workflow_dispatch:
 
 jobs:
